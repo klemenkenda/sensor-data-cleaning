@@ -1,5 +1,6 @@
 # Python
 .ipynb_checkpoints
+__pycache__/
 
 # R
 .RData

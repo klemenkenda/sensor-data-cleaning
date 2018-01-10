@@ -1,6 +1,7 @@
 # includes
 import numpy as np
 import scipy.stats
+import math
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
@@ -14,7 +15,8 @@ from utilities import *
 
 from pandas import datetime
 from statsmodels.tsa.arima_model import ARIMA
-from statsmodels.tsa.arima_model import ARMAResults 
+from statsmodels.tsa.arima_model import ARMAResults
+import sklearn.metrics
 
 
 def LearnOptimalParameters(stationId, n_iter = 20, size = 3000):
@@ -79,7 +81,7 @@ def CompareCleanRaw(sensorId, p, q, r):
     # fit model
     model = ARIMA(ts, order=(1,1,0))
     model_fit = model.fit(disp=0)
-    bic1 = model_fit.bic
+    rmse1 = math.sqrt(model_fit.sigma2)
     
     
     # clean data
@@ -98,10 +100,10 @@ def CompareCleanRaw(sensorId, p, q, r):
     # fit model
     modelu = ARIMA(uts, order=(1,1,0))
     modelu_fit = modelu.fit(disp=0)
-    bic2 = modelu_fit.bic
-    modelu_fit
+    rmse2 = math.sqrt(modelu_fit.sigma2)
+    #modelu_fit
     
-    print("BIC - raw:", bic1, " BIC - clean:", bic2)
+    print("RMSE - raw:", rmse1, " RMSE - clean:", rmse2)
     
     #plt.plot(uts, label="Clean data")
     #plt.plot(ts, label="Raw data")

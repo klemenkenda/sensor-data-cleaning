@@ -36,6 +36,7 @@ def LoadData(StationId):
     return df, X, noise
 
 def IntroduceNoise(X, noise, noiseAmp):
+    np.random.seed(1)
     # introduce noise
     y = []
     for i in range(0, len(X)):

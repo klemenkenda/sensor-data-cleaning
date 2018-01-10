@@ -139,7 +139,7 @@ class KalmanAOTSClassifier(BaseEstimator, ClassifierMixin):
     
     def score(self, X, y_true):
         ly = self.predict(X);
-        score = sklearn.metrics.f1_score(y_true, ly) * sklearn.metrics.precision_score(y_true, ly)
+        score = sklearn.metrics.f1_score(y_true, ly) * pow(sklearn.metrics.precision_score(y_true, ly), 5)
         # print(sklearn.metrics.classification_report(y_true, y))
         print("Score: ", score, "    p, q, r", self.p_fact, self.q_fact, self.r_fact)
         return score

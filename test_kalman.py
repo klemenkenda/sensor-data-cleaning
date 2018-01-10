@@ -105,6 +105,9 @@ def CompareCleanRaw(sensorId, p, q, r):
     
     print("RMSE - raw:", rmse1, " RMSE - clean:", rmse2)
     
+    with open("results.csv", "a") as f:
+        f.write("%s;%f;%f;%f;%f;%f;%d;%d;%d" % (sensorId, p, q, r, rmse1, rmse2, rmse2 < rmse1, errors, length))
+
     #plt.plot(uts, label="Clean data")
     #plt.plot(ts, label="Raw data")
     #plt.legend(loc='lower right', prop={'size': 9})
@@ -125,14 +128,21 @@ if __name__ == '__main__':
     l = len(sources)
     l = 2
 
+    with open("results.csv", "w") as f:
+        f.write("SensorId;p;q;r;RMSE1;RMSE2;better clean fit;Errors;Length;Length of DF;avgWindow;noise\n")
+
     for i in range(0, l):
         try:
             df, X, noise = LoadData(sources["Station_id"][i])
             avgWindow = (df['Date'][len(df) - 1] - df['Date'][0]) / 1000 / 60 / 60 / 24 / len(df)
             #if (avgWindow < 1.05) and (noise < 0.2):
             print("Chosen", sources["Station_id"][i])
-            p, q, r = LearnOptimalParameters(sources["Station_id"][i])
-            CompareCleanRaw(sources["Station_id"][i], p, q, r)
+            # p, q, r = LearnOptimalParameters(sources["Station_id"][i])
+            # CompareCleanRaw(sources["Station_id"][i], p, q, r)
+            CompareCleanRaw(sources["Station_id"][i], 1, 1, 1)
+
+            with open("results.csv", "a") as f:
+                f.write("%d;%f;%f;\n" % (len(df), avgWindow, noise))
             #else:
             #    print("Rejected", sources["Station_id"][i])
         except Exception as inst:

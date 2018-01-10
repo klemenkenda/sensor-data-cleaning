@@ -29,7 +29,8 @@ def LoadData(StationId):
 
     if len(df) < 100:
         print("Too few data!")
-        sys.exit(0)
+        #sys.exit(0)
+        return 0, 0, 0
     
     # calculate average noise
     noise = ts.rolling(window = 10, center = False).std().median()

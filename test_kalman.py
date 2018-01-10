@@ -137,9 +137,9 @@ if __name__ == '__main__':
             avgWindow = (df['Date'][len(df) - 1] - df['Date'][0]) / 1000 / 60 / 60 / 24 / len(df)
             #if (avgWindow < 1.05) and (noise < 0.2):
             print("Chosen", sources["Station_id"][i])
-            # p, q, r = LearnOptimalParameters(sources["Station_id"][i])
-            # CompareCleanRaw(sources["Station_id"][i], p, q, r)
-            CompareCleanRaw(sources["Station_id"][i], 1, 1, 1)
+            p, q, r = LearnOptimalParameters(sources["Station_id"][i])
+            CompareCleanRaw(sources["Station_id"][i], p, q, r)
+            # CompareCleanRaw(sources["Station_id"][i], 1, 1, 1)
 
             with open("results.csv", "a") as f:
                 f.write("%d;%f;%f;\n" % (len(df), avgWindow, noise))

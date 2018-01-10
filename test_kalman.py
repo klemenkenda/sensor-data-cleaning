@@ -24,8 +24,9 @@ def LearnOptimalParameters(stationId, n_iter = 20, size = 3000):
         "q_fact": [0.00001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1]
     }
 
-    df, X, noise = LoadData(stationId)
-    X, y = IntroduceNoise(X, noise, 40 * noise)
+    
+    df, X, noise = LoadData(stationId)    
+    X, y = IntroduceNoise(X, noise, 40 * noise)    
 
     clf2 = KalmanAOTSClassifier()
     n_iter_search = 20
@@ -41,6 +42,11 @@ def LearnOptimalParameters(stationId, n_iter = 20, size = 3000):
     for candidate in candidates:
         params = results['params'][candidate]
     print("Score: ", results['mean_test_score'][candidate])
+    #print("Precision: ", results['mean_test_precision'][candidate])
+    print("all keys")
+    
+    #for key, value in results.iteritems():
+    #    print(key, value)
 
     return params['p_fact'], params['q_fact'], params['r_fact']
 
@@ -104,5 +110,33 @@ def CompareCleanRaw(sensorId, p, q, r):
     #plt.close();
 
 if __name__ == '__main__':
-    p, q, r = LearnOptimalParameters(95081)
-    CompareCleanRaw(95081, p, q, r)
+    print("Loading all sensors ...")
+    # API URL to underground water levels Slovenia
+    # list all available sensors
+    url = "http://atena.ijs.si:8080/CollectorAPIServer/undergroundWater?getStations"
+    jsonStr = urllib.request.urlopen(url).read().decode('utf-8')
+    sources = pd.read_json(jsonStr)
+
+    # go through all sensors and run algorithm for them
+    allNodes = []
+
+    l = len(sources)
+    l = 2
+
+    for i in range(0, l):
+        try:
+            df, X, noise = LoadData(sources["Station_id"][i])
+            avgWindow = (df['Date'][len(df) - 1] - df['Date'][0]) / 1000 / 60 / 60 / 24 / len(df)
+            #if (avgWindow < 1.05) and (noise < 0.2):
+            print("Chosen", sources["Station_id"][i])
+            p, q, r = LearnOptimalParameters(sources["Station_id"][i])
+            CompareCleanRaw(sources["Station_id"][i], p, q, r)
+            #else:
+            #    print("Rejected", sources["Station_id"][i])
+        except Exception as inst:
+            print(type(inst))    # the exception instance
+            print(inst.args)     # arguments stored in .args
+
+
+    #p, q, r = LearnOptimalParameters(95081)
+    #CompareCleanRaw(95081, p, q, r)

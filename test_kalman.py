@@ -126,7 +126,7 @@ if __name__ == '__main__':
     allNodes = []
 
     l = len(sources)
-    l = 2
+    # l = 2
 
     with open("results.csv", "w") as f:
         f.write("SensorId;p;q;r;RMSE1;RMSE2;better clean fit;Errors;Length;Length of DF;avgWindow;noise\n")
